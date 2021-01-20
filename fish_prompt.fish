@@ -824,6 +824,27 @@ function __budspencer_prompt_left_symbols -d 'Display symbols'
     echo -n $symbols
 end
 
+# Inspired by https://gist.github.com/trautonen/bd26dc33c857d2bb810b910c51de34ea
+function __budspencer_terraform_workspace -d "Show the current terraform workspace in terraform directories."
+    # Edit your fish prompt with `funced fish_prompt` and
+    # add the following to a desired place in the function.
+    # Save the prompt after editing with `funcsave fish_prompt`.
+
+    # Set a variable for workspace color.
+    set -l tfworkspace_color $budspencer_colors[11]
+
+    # Append the workspace name at the current prompt position if
+    # the directory contains a .terraform subdirectory
+    if test -d .terraform
+      # set_color -b $budspencer_colors[5] $budspencer_colors[0]
+      set_color -b $budspencer_colors[5] $budspencer_colors[1]
+      echo -n ''
+      set workspace (terraform workspace show ^/dev/null)
+      echo -n -s "[" $workspace "]"
+      set_color -b $budspencer_colors[1] $budspencer_colors[9]
+    end
+end
+
 ###############################################################################
 # => Prompt initialization
 ###############################################################################
@@ -896,5 +917,5 @@ set -x LOGIN $USER
 
 function fish_prompt -d 'Write out the left prompt of the budspencer theme'
   set -g last_status $status
-  echo -n -s (__budspencer_prompt_bindmode) (__budspencer_prompt_virtual_env) (__budspencer_prompt_node_version) (__budspencer_prompt_git_branch) (__budspencer_prompt_left_symbols) ' ' (set_color normal)
+  echo -n -s (__budspencer_prompt_bindmode) (__budspencer_prompt_virtual_env) (__budspencer_prompt_node_version) (__budspencer_prompt_git_branch) (__budspencer_terraform_workspace) (__budspencer_prompt_left_symbols) ' ' (set_color normal)
 end
